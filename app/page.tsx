@@ -31,13 +31,16 @@ export default async function Landing() {
               </Link>
             )}
             <a
-              href="https://github.com/underhack/underhack"
+              href="https://github.com/underflash-io/underhack"
               className="btn-ghost lg"
               target="_blank"
               rel="noreferrer"
             >
               View on GitHub
             </a>
+            <Link href="/docs/api" className="btn-link lg">
+              Read the API docs →
+            </Link>
           </div>
           <p className="hero-meta">
             MIT licensed · Self-hosted · SQLite default · ~50&nbsp;MB image · Slack, email, webhooks
@@ -68,7 +71,7 @@ export default async function Landing() {
             request fires. Nothing wild, nothing surprising.
           </Feature>
           <Feature kicker="06" title="Yours to keep">
-            Apache-2.0. Runs on a $5 VPS. SQLite by default — Postgres when you outgrow it. No telemetry,
+            MIT licensed. Runs on a $5 VPS. SQLite by default — Postgres when you outgrow it. No telemetry,
             no phone-home, no vendor lock.
           </Feature>
         </div>
@@ -112,7 +115,7 @@ export default async function Landing() {
             <Plan
               name="Self-hosted"
               price="Free"
-              priceNote="Apache 2.0"
+              priceNote="MIT licensed"
               features={[
                 "Unlimited alerts",
                 "Unlimited sources",
@@ -122,7 +125,7 @@ export default async function Landing() {
                 "Community support (GitHub)",
               ]}
               cta="Get the code"
-              ctaHref="https://github.com/underhack/underhack"
+              ctaHref="https://github.com/underflash-io/underhack"
               ctaExternal
             />
             <Plan
@@ -139,7 +142,7 @@ export default async function Landing() {
                 "Multi-user (up to 5)",
               ]}
               cta="Join the waitlist"
-              ctaHref="mailto:hello@underhack.io?subject=Underhack%20Cloud%20waitlist"
+              ctaHref="mailto:hello@underhack.dev?subject=Underhack%20Cloud%20waitlist"
               ctaExternal
             />
             <Plan
@@ -155,7 +158,7 @@ export default async function Landing() {
                 "Compliance assistance",
               ]}
               cta="Get in touch"
-              ctaHref="mailto:hello@underhack.io?subject=Underhack%20Team"
+              ctaHref="mailto:hello@underhack.dev?subject=Underhack%20Team"
               ctaExternal
             />
           </div>
@@ -167,7 +170,8 @@ export default async function Landing() {
           <p className="kicker">QUICKSTART</p>
           <h2>Up and running in under two minutes.</h2>
           <pre className="code-block">{`# 1. Run it
-docker run -p 4317:4317 -v underhack:/app/data ghcr.io/underhack/underhack
+docker run -p 4317:4317 -v underhack:/app/data \\
+  ghcr.io/underflash-io/underhack:latest
 
 # 2. Open the dashboard
 open http://localhost:4317
@@ -186,9 +190,10 @@ open http://localhost:4317
             <p className="muted small">Breach monitoring you can read the source code of.</p>
           </div>
           <nav>
-            <a href="https://github.com/underhack/underhack" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://github.com/underflash-io/underhack" target="_blank" rel="noreferrer">GitHub</a>
+            <Link href="/docs/api">API docs</Link>
             <Link href="/login">Sign in</Link>
-            <a href="mailto:hello@underhack.io">Contact</a>
+            <a href="mailto:hello@underhack.dev">Contact</a>
           </nav>
         </div>
       </footer>

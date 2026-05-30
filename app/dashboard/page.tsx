@@ -41,8 +41,20 @@ type Run = {
   note: string | null;
 };
 
-const SEVERITIES = ["all", "critical", "high", "medium", "low"];
-const STATUSES = ["open", "ack", "resolved", "dismissed", "all"];
+const SEVERITIES: { value: string; label: string }[] = [
+  { value: "all", label: "All severities" },
+  { value: "critical", label: "Critical" },
+  { value: "high", label: "High" },
+  { value: "medium", label: "Medium" },
+  { value: "low", label: "Low" },
+];
+const STATUSES: { value: string; label: string }[] = [
+  { value: "open", label: "Open" },
+  { value: "ack", label: "Acknowledged" },
+  { value: "resolved", label: "Resolved" },
+  { value: "dismissed", label: "Dismissed" },
+  { value: "all", label: "All" },
+];
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -142,17 +154,17 @@ export default function Dashboard() {
               onChange={(e) => setQuery(e.target.value)}
               className="search"
             />
-            <select value={severity} onChange={(e) => setSeverity(e.target.value)}>
+            <select value={severity} onChange={(e) => setSeverity(e.target.value)} aria-label="Filter by severity">
               {SEVERITIES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+                <option key={s.value} value={s.value}>
+                  {s.label}
                 </option>
               ))}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status">
               {STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+                <option key={s.value} value={s.value}>
+                  {s.label}
                 </option>
               ))}
             </select>
@@ -160,13 +172,26 @@ export default function Dashboard() {
         </div>
 
         <div className="alert-list">
-          {loading && <p className="muted pad">Loading…</p>}
+          {loading && (
+            <div className="empty">
+              <p className="muted">Loading alerts…</p>
+            </div>
+          )}
           {!loading && visible.length === 0 && (
             <div className="empty">
-              <p className="muted">No alerts match this filter.</p>
-              <p className="muted small">
-                New findings appear here within seconds of being triaged.
+              <h3>No matching alerts</h3>
+              <p>
+                {query
+                  ? "Try clearing the search or changing filters."
+                  : status === "open"
+                    ? "You're all caught up. New findings appear here within seconds of being triaged."
+                    : "No alerts in this state right now."}
               </p>
+              {query && (
+                <button type="button" className="btn-ghost sm" onClick={() => setQuery("")}>
+                  Clear search
+                </button>
+              )}
             </div>
           )}
           {visible.map((a) => (
@@ -205,13 +230,17 @@ export default function Dashboard() {
                   )}
                   <span className="spacer" />
                   {a.status !== "ack" && (
-                    <button onClick={() => setAlertStatus(a.id, "ack")}>Ack</button>
+                    <button type="button" className="btn-ghost sm" onClick={() => setAlertStatus(a.id, "ack")}>
+                      Acknowledge
+                    </button>
                   )}
                   {a.status !== "resolved" && (
-                    <button onClick={() => setAlertStatus(a.id, "resolved")}>Resolve</button>
+                    <button type="button" className="btn-ghost sm" onClick={() => setAlertStatus(a.id, "resolved")}>
+                      Resolve
+                    </button>
                   )}
                   {a.status !== "dismissed" && (
-                    <button className="ghost" onClick={() => setAlertStatus(a.id, "dismissed")}>
+                    <button type="button" className="btn-ghost sm ghost-quiet" onClick={() => setAlertStatus(a.id, "dismissed")}>
                       Dismiss
                     </button>
                   )}

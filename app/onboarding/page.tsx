@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 
 type StepId = "system" | "sources" | "notify" | "done";
 
-const STEPS: { id: StepId; title: string; sub: string }[] = [
-  { id: "system", title: "What are you protecting?", sub: "Tell us about one product or stack." },
-  { id: "sources", title: "Pick intel sources", sub: "Where should we watch for new threats?" },
-  { id: "notify", title: "How should we ping you?", sub: "Optional — you can also use the API." },
-  { id: "done", title: "All set", sub: "Your first scan kicks off in the background." },
+const STEPS: { id: StepId; title: string; sub: string; label: string }[] = [
+  { id: "system", title: "What are you protecting?", sub: "Tell us about one product or stack.", label: "System" },
+  { id: "sources", title: "Pick intel sources", sub: "Where should we watch for new threats?", label: "Sources" },
+  { id: "notify", title: "How should we ping you?", sub: "Optional — you can also use the API.", label: "Notify" },
+  { id: "done", title: "All set", sub: "Your first scan kicks off in the background.", label: "Done" },
 ];
 
 const SOURCE_PRESETS = [
@@ -163,9 +163,9 @@ export default function Onboarding() {
     <main className="onboarding">
       <div className="onb-progress">
         {STEPS.map((s, i) => (
-          <div key={s.id} className={`onb-step ${i <= stepIndex ? "active" : ""}`}>
-            <span>{i + 1}</span>
-            <em>{s.title.split(" ")[0]}</em>
+          <div key={s.id} className={`onb-step ${i < stepIndex ? "done" : ""} ${i === stepIndex ? "active" : ""}`}>
+            <span aria-hidden="true">{i < stepIndex ? "✓" : i + 1}</span>
+            <em>{s.label}</em>
           </div>
         ))}
       </div>

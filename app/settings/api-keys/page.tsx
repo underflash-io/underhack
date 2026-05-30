@@ -17,6 +17,7 @@ export default function ApiKeysPage() {
   const [label, setLabel] = useState("");
   const [busy, setBusy] = useState(false);
   const [revealed, setRevealed] = useState<{ token: string; label: string } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   async function load() {
     const r = await fetch("/api/keys", { cache: "no-store" });
@@ -82,9 +83,22 @@ export default function ApiKeysPage() {
       {revealed && (
         <section className="panel callout">
           <h2 className="kicker">One-time token for &ldquo;{revealed.label}&rdquo;</h2>
-          <pre className="token">{revealed.token}</pre>
-          <p>Copy this now. It will never be shown again.</p>
-          <button className="btn" onClick={() => setRevealed(null)}>I&apos;ve saved it</button>
+          <div className="token-row">
+            <pre className="token">{revealed.token}</pre>
+            <button
+              type="button"
+              className="btn-ghost sm"
+              onClick={async () => {
+                await navigator.clipboard.writeText(revealed.token);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 1500);
+              }}
+            >
+              {copied ? "Copied ✓" : "Copy"}
+            </button>
+          </div>
+          <p>Copy this now. It will never be shown again — we only keep a hash.</p>
+          <button type="button" className="btn" onClick={() => setRevealed(null)}>I&apos;ve saved it</button>
         </section>
       )}
 
