@@ -83,6 +83,11 @@ a { color: var(--text); text-decoration: none; }
 a:hover { text-decoration: none; color: var(--white); }
 
 /* framed container with vertical rails (openmail.sh motif) */
+/* `hidden` attribute MUST win over any author `display:` rule — without
+   this the mobile drawer's display:flex overrides [hidden]{display:none}
+   from the UA stylesheet and the closed drawer covers the viewport. */
+[hidden] { display: none !important; }
+
 .frame {
   max-width: 1120px;
   margin: 0 auto;
@@ -90,6 +95,14 @@ a:hover { text-decoration: none; color: var(--white); }
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
   background: var(--bg);
+}
+/* Landing surface is full-bleed marketing — drop the boxed in-app frame
+   when the page below is .landing. Keeps in-app calm/operator chrome. */
+.frame:has(> .landing),
+.frame:has(> .docs) {
+  max-width: none;
+  border-left: none;
+  border-right: none;
 }
 
 /* uppercase, wide-tracked label treatment used throughout */
