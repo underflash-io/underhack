@@ -6,11 +6,10 @@ import ThemeToggle from "./ThemeToggle";
 
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/insights", label: "Insights" },
   { href: "/systems", label: "Systems" },
   { href: "/agents", label: "Agents" },
-  { href: "/assess", label: "Assess" },
   { href: "/connectors", label: "Connectors" },
-  { href: "/chat", label: "Chat" },
   { href: "/settings/api-keys", label: "API Keys" },
   { href: "/admin", label: "Admin" },
 ];

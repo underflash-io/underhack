@@ -32,6 +32,8 @@ function toPublicAlert(a: Awaited<ReturnType<typeof listAlertsPaged>>[number]) {
     confidence: a.confidence,
     status: statusOut(a.status),
     created_at: new Date(a.created_at).toISOString(),
+    acknowledged_at: a.acknowledged_at ? new Date(a.acknowledged_at).toISOString() : null,
+    resolved_at: a.resolved_at ? new Date(a.resolved_at).toISOString() : null,
     system: a.system_id
       ? { id: a.system_id, name: a.system_name }
       : null,

@@ -226,6 +226,8 @@ export function insertAlert(input: {
     status: "open",
     triage_method: input.triageMethod ?? null,
     created_at: now(),
+    acknowledged_at: null,
+    resolved_at: null,
   };
   getDb()
     .prepare(
@@ -274,6 +276,22 @@ export function listAlerts(opts?: {
 }
 
 export function setAlertStatus(alertId: string, status: string): void {
+  // First-transition timestamps power MTTA/MTTR. Use COALESCE so we never
+  // overwrite an existing timestamp — the metric is "time to first ack",
+  // not "time to most recent ack".
+  const now = new Date().toISOString();
+  if (status === "ack" || status === "resolved") {
+    getDb()
+      .prepare(
+        `UPDATE alerts
+         SET status = ?,
+             acknowledged_at = COALESCE(acknowledged_at, ?),
+             resolved_at = CASE WHEN ? = 'resolved' THEN COALESCE(resolved_at, ?) ELSE resolved_at END
+         WHERE id = ?`,
+      )
+      .run(status, now, status, now, alertId);
+    return;
+  }
   getDb().prepare("UPDATE alerts SET status = ? WHERE id = ?").run(status, alertId);
 }
 

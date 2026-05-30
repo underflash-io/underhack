@@ -253,6 +253,23 @@ function migrate_schema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_apikey_hash ON api_keys(key_hash);
     CREATE INDEX IF NOT EXISTS idx_webhook_enabled ON webhook_subscriptions(enabled);
   `);
+
+  // ----- migrations -----
+  // Idempotent ADD COLUMN — SQLite errors if it already exists, so we probe first.
+  addColumnIfMissing(db, "alerts", "acknowledged_at", "TEXT");
+  addColumnIfMissing(db, "alerts", "resolved_at", "TEXT");
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_alerts_resolved ON alerts(resolved_at);`);
+}
+
+function addColumnIfMissing(
+  db: Database.Database,
+  table: string,
+  column: string,
+  decl: string,
+): void {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (cols.some((c) => c.name === column)) return;
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${decl};`);
 }
 
 // --- row types ---
@@ -308,6 +325,8 @@ export interface AlertRow {
   status: string; // open | ack | resolved
   triage_method: string | null;
   created_at: string;
+  acknowledged_at: string | null;
+  resolved_at: string | null;
 }
 
 export interface AgentRunRow {

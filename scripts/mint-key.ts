@@ -22,8 +22,11 @@ const { row, token } = createApiKey({
     "alerts:write",
     "watchlist:read",
     "watchlist:write",
+    "subscriptions:read",
+    "subscriptions:write",
     "webhooks:read",
     "webhooks:write",
+    "metrics:read",
   ],
   createdBy: users[0].id,
 });
