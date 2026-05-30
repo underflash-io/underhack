@@ -1,0 +1,57 @@
+{
+  "name": "underhack",
+  "version": "0.1.0",
+  "description": "Open-source breach & vulnerability monitoring for small teams.",
+  "license": "MIT",
+  "homepage": "https://github.com/underflash/underhack#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/underflash/underhack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/underflash/underhack/issues"
+  },
+  "keywords": [
+    "security",
+    "vulnerability",
+    "cve",
+    "breach-monitoring",
+    "kev",
+    "nvd",
+    "nextjs",
+    "self-hosted",
+    "open-source"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev -p 4317",
+    "build": "next build",
+    "start": "next start -p 4317",
+    "worker": "tsx src/worker.ts",
+    "collect": "tsx src/cli.ts",
+    "mint-key": "tsx scripts/mint-key.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "dotenv": "^17.4.2",
+    "geist": "^1.7.1",
+    "next": "^16.2.6",
+    "nodemailer": "^8.0.10",
+    "openai": "^6.39.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "rss-parser": "^3.13.0",
+    "tsx": "^4.22.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.9.1",
+    "@types/nodemailer": "^8.0.0",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}

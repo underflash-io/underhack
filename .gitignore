@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+
+# build output
+.next/
+dist/
+build/
+out/
+
+# runtime data (SQLite, json caches, logs)
+data/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.log
+
+# env
+.env
+.env.local
+.env.*.local
+
+# editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# claude code — keep shared settings, ignore per-user state
+.claude/settings.local.json
+
+# test / coverage
+coverage/
+
+# misc
+*.tsbuildinfo
+next-env.d.ts

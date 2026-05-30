@@ -1,0 +1,22 @@
+services:
+  underhack:
+    build: .
+    image: underhack:latest
+    container_name: underhack
+    restart: unless-stopped
+    ports:
+      - "4317:4317"
+    env_file: .env
+    environment:
+      DB_PATH: /data/underhack.db
+    volumes:
+      - underhack-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4317/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  underhack-data:
