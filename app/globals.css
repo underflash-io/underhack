@@ -174,34 +174,109 @@ a:hover { text-decoration: none; color: var(--white); }
 .nav-toggle .bars::before { content: ""; position: absolute; top: -5px; left: 0; }
 .nav-toggle .bars::after  { content: ""; position: absolute; top:  5px; left: 0; }
 
-/* in-app mobile drawer */
+/* in-app burger side navigation — off-canvas drawer that slides from the
+   right over a dimmed backdrop. Stays mounted; closed state is parked
+   off-screen and made non-interactive (visibility + [inert]). */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: var(--z-overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms ease, visibility 200ms ease;
+}
+.mobile-nav-backdrop[data-open="true"] { opacity: 1; visibility: visible; }
+
 .mobile-nav {
   position: fixed;
-  inset: var(--nav-height) 0 0 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 84vw);
   background: var(--panel);
-  border-top: 1px solid var(--border);
-  padding: 16px 20px 24px;
+  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  z-index: var(--z-overlay);
+  z-index: var(--z-modal);
   overflow-y: auto;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 240ms ease, visibility 240ms ease;
+}
+.mobile-nav[data-open="true"] { transform: translateX(0); visibility: visible; }
+
+.mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  padding: 0 14px 0 20px;
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+.mobile-nav-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.mobile-nav-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--white);
+  width: 40px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+.mobile-nav-close:hover { border-color: var(--white); }
+
+.mobile-nav nav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 20px;
+  flex: 1;
 }
 .mobile-nav a {
   color: var(--text);
-  padding: 14px 12px;
+  padding: 14px 4px;
   font-size: 14px;
   letter-spacing: 0.04em;
   border-bottom: 1px solid var(--border2);
 }
+.mobile-nav a:hover { color: var(--white); }
 .mobile-nav a.active { color: var(--white); font-weight: 600; }
-.mobile-nav .mobile-foot {
-  margin-top: 12px;
+
+.mobile-nav-foot {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
 }
+.mobile-nav-email {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mobile-nav-logout {
+  flex: none;
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.mobile-nav-logout:hover { color: var(--white); }
 
 /* collapse desktop nav into the drawer below 880px */
 @media (max-width: 880px) {

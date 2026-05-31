@@ -19,8 +19,10 @@ export default function Nav({ email }: { email?: string | null }) {
   const path = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
-  // Esc closes the mobile menu and returns focus to the trigger.
+  // Esc closes the side drawer and returns focus to the trigger. While the
+  // drawer is open we lock body scroll and pull focus into the panel.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -31,6 +33,7 @@ export default function Nav({ email }: { email?: string | null }) {
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
@@ -90,22 +93,46 @@ export default function Nav({ email }: { email?: string | null }) {
         className="nav-toggle"
         aria-expanded={open}
         aria-controls="mobile-nav"
-        aria-label={open ? "Close menu" : "Open menu"}
-        onClick={() => setOpen((v) => !v)}
+        aria-label="Open menu"
+        onClick={() => setOpen(true)}
       >
-        <span aria-hidden="true">{open ? "✕" : "☰"}</span>
+        <span aria-hidden="true">☰</span>
       </button>
 
-      {/* Mobile menu sheet — rendered into the topbar so the close button stays
-          focusable; opens via data-menu-open, closes on link click + Esc. */}
+      {/* Dimmed backdrop — click anywhere off the panel to dismiss. */}
+      <div
+        className="mobile-nav-backdrop"
+        data-open={open ? "true" : "false"}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Off-canvas side drawer. Stays mounted so it can slide in/out; when
+          closed it's parked off-screen with visibility:hidden, which also
+          drops its links out of the tab order and the a11y tree. */}
       <div
         id="mobile-nav"
         className="mobile-nav"
+        data-open={open ? "true" : "false"}
         role="dialog"
         aria-modal="true"
         aria-label="Site navigation"
-        hidden={!open}
       >
+        <div className="mobile-nav-header">
+          <span className="mobile-nav-title">Menu</span>
+          <button
+            ref={closeRef}
+            type="button"
+            className="mobile-nav-close"
+            aria-label="Close menu"
+            onClick={() => {
+              setOpen(false);
+              triggerRef.current?.focus();
+            }}
+          >
+            <span aria-hidden="true">✕</span>
+          </button>
+        </div>
         <nav aria-label="Primary mobile">
           {LINKS.map((l) => {
             const active = path === l.href || path.startsWith(l.href + "/");
@@ -120,16 +147,23 @@ export default function Nav({ email }: { email?: string | null }) {
               </Link>
             );
           })}
-          <div className="mobile-nav-divider" />
+        </nav>
+        <div className="mobile-nav-foot">
           {email ? (
             <>
-              <span className="mobile-nav-email">{email}</span>
-              <a href="/auth/logout">Log out</a>
+              <span className="mobile-nav-email" title={email}>
+                {email}
+              </span>
+              <a href="/auth/logout" className="mobile-nav-logout">
+                Log out
+              </a>
             </>
           ) : (
-            <Link href="/login">Sign in</Link>
+            <Link href="/login" className="mobile-nav-logout">
+              Sign in
+            </Link>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );
