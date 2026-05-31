@@ -22,6 +22,9 @@ RUN apk add --no-cache python3 make g++ libc6-compat
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# Next.js apps don't always ship a public/ dir (and it's gitignored here),
+# so guarantee it exists — the runtime stage unconditionally COPYs it.
+RUN mkdir -p public
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 

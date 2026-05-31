@@ -1,0 +1,59 @@
+# Fly.io configuration for Underhack.
+#
+# First-time setup (run once, from a machine with flyctl + a Fly account):
+#   fly auth login
+#   fly apps create underhack                       # pick a globally-unique name
+#   fly volumes create underhack_data --region fra --size 1
+#   fly secrets set ADMIN_EMAIL="you@example.com" \
+#                   ADMIN_PASSWORD="a-strong-password" \
+#                   REQUESTY_API_KEY="sk-..." \
+#                   BASE_URL="https://underhack.fly.dev"
+#
+# Every deploy after that is just:
+#   fly deploy
+#
+# NOTE: secrets above are injected as env vars at runtime — never commit them.
+
+app = "underhack"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# Non-secret runtime configuration. Secrets are managed via `fly secrets`.
+[env]
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+  PORT = "4317"
+  DB_PATH = "/data/underhack.db"
+  POLL_INTERVAL_SEC = "300"
+  SEVERITY_THRESHOLD = "high"
+
+# Persistent SQLite database. The Next.js server and the polling worker run
+# together in one machine (see the Dockerfile CMD) so they share this single
+# database file. Because the data lives on one volume, do NOT scale this app
+# beyond a single machine.
+[mounts]
+  source = "underhack_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 4317
+  force_https = true
+  # The background worker must keep polling sources, so the machine must stay
+  # up even when there's no inbound HTTP traffic — never auto-stop it.
+  auto_stop_machines = "off"
+  auto_start_machines = false
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"
