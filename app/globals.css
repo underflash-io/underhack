@@ -1594,3 +1594,87 @@ a.text-link:hover { text-decoration: underline; }
   font-size: 12px;
 }
 .insights-foot a { color: var(--accent); }
+
+/* ============================================================
+   mobile usability pass
+   Phone-sized refinements: prevent iOS focus-zoom, tighten
+   gutters/type, let dense rows wrap, and make wide data tables
+   scroll instead of overflowing the viewport.
+   ============================================================ */
+
+/* Never let a fixed element (mobile drawers) cause sideways scroll. */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+/* Larger, easier-to-hit menu trigger on touch devices. */
+@media (max-width: 880px) {
+  .nav-toggle { width: 44px; height: 40px; }
+  .landing-nav-toggle { width: 44px; height: 40px; }
+}
+
+@media (max-width: 640px) {
+  /* iOS Safari zooms the page when focusing an input whose text is
+     under 16px. Bump form controls to 16px to stop the jump. */
+  input, select, textarea { font-size: 16px; }
+
+  /* Tighter page gutters reclaim horizontal space. */
+  .container { padding: 24px 16px 72px; }
+  .page-head { padding-bottom: 18px; margin-bottom: 22px; }
+  .page-head h1 { font-size: 28px; }
+  .page-head .muted { font-size: 13px; }
+
+  /* Dashboard stats: smaller cells so two fit comfortably. */
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-grid .stat { padding: 16px; }
+  .stat-val { font-size: 28px; }
+
+  /* Agent health pills stack instead of squashing side by side. */
+  .agent-health { flex-direction: column; }
+  .agent-pill { border-right: none; border-bottom: 1px solid var(--border); }
+  .agent-pill:last-child { border-bottom: none; }
+
+  /* Panel headers (e.g. dashboard filters) wrap to a second line and
+     the filter controls span the full width for easy tapping. */
+  .panel-head { flex-wrap: wrap; gap: 12px; }
+  .filters { width: 100%; flex-wrap: wrap; }
+  .filters select { flex: 1; min-width: 120px; }
+  input[type="search"].search { width: 100%; max-width: none; }
+
+  /* Wide data tables scroll horizontally rather than overflow. */
+  table.runs, table.aging-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Inline form rows become a vertical stack. */
+  .form-row { flex-direction: column; align-items: stretch; }
+  .token-row { flex-wrap: wrap; }
+  .token-row .btn-ghost { align-self: flex-start; }
+
+  /* Section-level containers: trim the generous desktop margins. */
+  .settings-page, .insights { margin: 24px auto; padding: 0 16px 48px; }
+  .docs { margin: 24px auto; padding: 0 16px; }
+  .onboarding { margin: 24px auto; padding: 0 16px; }
+
+  /* Onboarding: collapse the step rail to numbered chips that fit. */
+  .onb-progress { gap: 8px; }
+  .onb-step { padding: 10px; justify-content: center; }
+  .onb-step em { display: none; }
+  .onb-card { padding: 24px 18px; }
+  .onb-card h1 { font-size: 24px; }
+
+  /* Chat bubbles can use a little more width on a narrow screen. */
+  .chat-msg { max-width: 92%; }
+
+  /* Login card hugs the screen edges less aggressively. */
+  .login-card { padding: 32px 22px; }
+
+  /* Marketing sections lose their oversized vertical padding. */
+  .landing section { padding: 48px 18px; }
+  .landing > .hero { padding-top: calc(var(--landing-nav-height) + 40px) !important; }
+  .hero { padding-bottom: 56px !important; }
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn-primary, .hero-cta .btn-ghost { width: 100%; }
+  .landing-footer-inner { flex-direction: column; align-items: flex-start; }
+}
